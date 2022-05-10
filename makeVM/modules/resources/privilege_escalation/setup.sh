@@ -51,5 +51,5 @@ echo '0-59 * * * * root python3 /usr/local/bin/crypt/wrapper_script.py' >> /etc/
 
 
 # remove source folder
-rm -r ../privilege_escalation
+#rm -r ../privilege_escalation
 
