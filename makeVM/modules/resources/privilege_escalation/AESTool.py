@@ -1,5 +1,6 @@
 import os
-from datetime import datetime
+import re
+import sys
 
 from Crypto import Random
 from Crypto.Cipher import AES
@@ -14,7 +15,14 @@ def create_key(inputValue):
         'utf-8')).digest()  # Create the Hash for the password, which is used for the encryption and decryption
 
 
-def encryptFile(key, filename):
+def remove_file(file):
+    try:
+        os.remove(file)
+    except Exception as e:
+        logging.warning("Error in deleting file:" + str(e))
+
+
+def encryptFile(key, filename, enctime):
     out_file = "encrypted_" + os.path.basename(filename)  # The file to write the encrypted data into
     file_size = str(os.path.getsize(filename)).zfill(16)  # get the filesize
     IV = Random.new().read(16)  # Initialisierungsvektor
@@ -29,10 +37,11 @@ def encryptFile(key, filename):
                 while 1:
                     chunk = f_in.read(CHUNKSIZE)
                     if len(chunk) == 0:
-                        logging.info(
-                            'encryption finished ' + datetime.now().replace(microsecond=0).isoformat() + ' ' + filename)
+                        logging.warning(
+                            'encryption finished ' + enctime + ' ' + filename)
                         f_in.close()
                         f_out.close()
+                        remove_file(filename)
                         break  # Break the while-loop, when document is fully read
                     if len(chunk) % 16 != 0:
                         chunk += b' ' * (16 - (
@@ -43,7 +52,7 @@ def encryptFile(key, filename):
 
 
 def dectyptFile(key, filename):
-    out_file = filename + str(Random.new(4))  # random name, not beautiful... but at least you get your file back
+    out_file = filename + "_decrypted.jpg"
     try:
         with open(filename, 'rb') as f_in:  # the outputfile in binary
             filesize = int(f_in.read(16))  # read the filesize from the encrypted doc
@@ -59,15 +68,22 @@ def dectyptFile(key, filename):
                         break
                     f_out.write(decryptor.decrypt(chunk))  # decrypt the chunk
                     f_out.truncate(filesize)  # cut the added whitespaces in the end
-    except IOError:
+    except Exception as e:
         logging.warning(filename)
+        print(e)
 
 
-def call(mode, password, file):
-    if mode == 1:
-        encryptFile(create_key(password), file)
-    elif mode == 2:
-        dectyptFile(create_key(password), file)
+def call(mode, enctime, file):
+    switchmode = int(mode)
+
+    pathToLogfile = "/Users/tschade/Desktop/HackenAnVMs"
+    logfileExisist = os.path.exists(pathToLogfile + "/log.log")
+    logging.basicConfig(filename="log.log")
+
+    if switchmode == 1:
+        encryptFile(create_key(enctime), file, enctime)
+    elif switchmode == 2:
+        dectyptFile(create_key(enctime), file)
     else:
         return Exception('Mode 1: Encrypt, Mode 2: Decrypt')
 
@@ -75,6 +91,6 @@ def call(mode, password, file):
 def main(mode, password, file):
     call(mode, password, file)
 
-    
+
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1], sys.argv[2], sys.argv[3])

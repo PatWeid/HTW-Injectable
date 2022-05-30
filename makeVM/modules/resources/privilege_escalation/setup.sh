@@ -1,11 +1,15 @@
 # create user cat_miner
 apt-get install useradd
-/usr/sbin/useradd -m cat_miner
+/usr/sbin/useradd -m cat_miner -s /bin/bash
 
 # set weak password for cat_miner
 echo "cat_miner:cat" | chpasswd
 
-apt-get install -y python-crypto
+#install pip
+apt-get install -y python3-pip
+
+#install crypto
+pip install pycryptodome
 
 # set SUID bit for base64
 chmod u+s /usr/bin/base64
@@ -20,8 +24,8 @@ ln -s /usr/sbin/john /usr/bin/john
 ln -s /usr/sbin/unshadow /usr/bin/unshadow
 
 # create download folder for cronjob
-mkdir /usr/share/cat_pictures
-chmod 744 /usr/share/cat_pictures
+mkdir /usr/share/downloaded_cat_pictures
+chmod 744 /usr/share/downloaded_cat_pictures
 
 # create archive folder for cat pictures
 mkdir /usr/share/cat_pictures_archive
@@ -40,14 +44,14 @@ mv ./cat_picture_maintenance.sh /usr/local/bin/
 # crypt tool
 mkdir /usr/local/bin/crypt
 mv AESTool.py /usr/local/bin/crypt/
-mv wrapper_script.py /usr/local/bin/crypt/
+mv wrapperNew.py /usr/local/bin/crypt/
 chmod 744 /usr/local/bin/crypt/AESTool.py
-chmod 744 /usr/local/bin/crypt/wrapper_script.py
+chmod 744 /usr/local/bin/crypt/wrapperNew.py
 
 
 # create cronjob
 echo '0-59 * * * * root sh /usr/local/bin/cat_picture_maintenance.sh' >> /etc/crontab
-echo '0-59 * * * * root python3 /usr/local/bin/crypt/wrapper_script.py' >> /etc/crontab
+echo '0-59 * * * * root python3 /usr/local/bin/crypt/wrapperNew.py' >> /etc/crontab
 
 
 # remove source folder
