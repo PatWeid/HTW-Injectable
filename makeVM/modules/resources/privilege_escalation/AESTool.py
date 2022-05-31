@@ -2,6 +2,7 @@ import os
 import re
 import sys
 
+from PIL import Image
 from Crypto import Random
 from Crypto.Cipher import AES
 from Crypto.Hash import SHA256
@@ -37,7 +38,7 @@ def encryptFile(key, filename, enctime):
                 while 1:
                     chunk = f_in.read(CHUNKSIZE)
                     if len(chunk) == 0:
-                        logging.warning(
+                        logging.info(
                             'encryption finished ' + enctime + ' ' + filename)
                         f_in.close()
                         f_out.close()
@@ -65,7 +66,14 @@ def dectyptFile(key, filename):
                         print('decryption done')
                         f_in.close()
                         f_out.close()
-                        break
+                        img = None
+			try:
+    				img = Image.open(out_file)
+    				print("File decoded into " + img.format + " format")
+			except Exception as e:
+    				print("Decoding Failed:" + e)
+    				remove_file(out_file)
+               	break
                     f_out.write(decryptor.decrypt(chunk))  # decrypt the chunk
                     f_out.truncate(filesize)  # cut the added whitespaces in the end
     except Exception as e:
