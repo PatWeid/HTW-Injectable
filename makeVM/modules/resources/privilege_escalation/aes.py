@@ -38,7 +38,7 @@ def encryptFile(key, filename, enctime):
                 while 1:
                     chunk = f_in.read(CHUNKSIZE)
                     if len(chunk) == 0:
-                        logging.info(
+                        logging.warning(
                             'encryption finished ' + enctime + ' ' + filename)
                         f_in.close()
                         f_out.close()
@@ -66,14 +66,15 @@ def dectyptFile(key, filename):
                         print('decryption done')
                         f_in.close()
                         f_out.close()
-                        img = None
-			try:
-    				img = Image.open(out_file)
-    				print("File decoded into " + img.format + " format")
-			except Exception as e:
-    				print("Decoding Failed:" + e)
-    				remove_file(out_file)
-               	break
+                        format = checkFormat(out_file)
+                        print('checkFormat')
+                        if format == '.jpg':
+                            print('Decoded file into ' + format)
+                            break
+                        else:
+                            print('decryption failed.')
+                            remove_file(out_file)
+                            break
                     f_out.write(decryptor.decrypt(chunk))  # decrypt the chunk
                     f_out.truncate(filesize)  # cut the added whitespaces in the end
     except Exception as e:
@@ -81,12 +82,24 @@ def dectyptFile(key, filename):
         print(e)
 
 
+def checkFormat(handle):
+    print('l1')
+    magic_numbers = {'jpg': bytes([0xFF, 0xD8, 0xFF, 0xE1]), }
+    with open(handle, 'rb') as fd:
+        file_head = fd.read(4)
+    ext = 'jpg'
+    if file_head.startswith(magic_numbers[ext]):
+        return '.jpg'
+    return None
+
+
 def call(mode, enctime, file):
     switchmode = int(mode)
 
-    pathToLogfile = "/Users/tschade/Desktop/HackenAnVMs"
+    pathToLogfile = "/usr/share/cat_pictures_archive"
     logfileExisist = os.path.exists(pathToLogfile + "/log.log")
-    logging.basicConfig(filename="log.log")
+    if not logfileExisist:
+        logging.basicConfig(filename="log.log")
 
     if switchmode == 1:
         encryptFile(create_key(enctime), file, enctime)

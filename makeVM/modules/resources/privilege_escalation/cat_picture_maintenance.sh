@@ -1,6 +1,6 @@
 #/bin/bash
 
-rm /usr/share/cat_pictures/*
+rm /usr/share/downloaded_cat_pictures/*
 cd /home/cat_miner/
 wget -i ./cat_servers.txt -P /usr/share/downloaded_cat_pictures
 cd /usr/share/downloaded_cat_pictures
