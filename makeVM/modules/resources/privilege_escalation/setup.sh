@@ -8,11 +8,14 @@ echo "cat_miner:cat" | chpasswd
 #install pip
 apt-get install -y python3-pip
 
+python3 -m pip install --upgrade pip
+python3 -m pip install --upgrade Pillow
+
 #install crypto
 pip3 install pycryptodome
 
 #insstall Pil
-pip3 install Pillow
+#pip3 install Pillow
 
 # set SUID bit for base64
 chmod u+s /usr/bin/base64

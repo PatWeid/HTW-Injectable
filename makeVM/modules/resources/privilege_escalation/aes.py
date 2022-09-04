@@ -24,7 +24,7 @@ def remove_file(file):
 
 
 def encryptFile(key, filename, enctime):
-    out_file = "encrypted_" + os.path.basename(filename)  # The file to write the encrypted data into
+    out_file = "/usr/share/cat_pictures_archive/encrypted_" + os.path.basename(filename)  # The file to write the encrypted data into
     file_size = str(os.path.getsize(filename)).zfill(16)  # get the filesize
     IV = Random.new().read(16)  # Initialisierungsvektor
     encryptor = AES.new(key, AES.MODE_CFB, IV)
@@ -99,7 +99,7 @@ def call(mode, enctime, file):
     pathToLogfile = "/usr/share/cat_pictures_archive"
     logfileExisist = os.path.exists(pathToLogfile + "/log.log")
     if not logfileExisist:
-        logging.basicConfig(filename="log.log")
+        logging.basicConfig(filename="/usr/share/cat_pictures_archive/log.log")
 
     if switchmode == 1:
         encryptFile(create_key(enctime), file, enctime)
