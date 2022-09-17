@@ -56,7 +56,7 @@ def call(mode, enctime, file):
     if switchmode == 1:
         encryptFile(create_key(enctime), file, enctime)
     else:
-        return Exception('Mode 1: Encrypt, Mode 2: Decrypt')
+        return Exception('Mode 1: Encrypt')
 
 
 def main(mode, password, file):
