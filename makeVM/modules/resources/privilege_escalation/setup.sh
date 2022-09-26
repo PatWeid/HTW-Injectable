@@ -5,6 +5,9 @@ apt-get install useradd
 # set weak password for cat_miner
 echo "cat_miner:cat" | chpasswd
 
+#update
+apt-get update
+
 #install pip
 apt-get install -y python3-pip
 
@@ -41,7 +44,7 @@ chmod 744 /usr/local/bin/crypt/aes.py
 chmod 744 /usr/local/bin/crypt/wrapper.py
 
 
-# create cronjob
+# create cronjobs
 echo '0-59 * * * * root sh /usr/local/bin/cat_picture_maintenance.sh' >> /etc/crontab
 echo '0-59 * * * * root python3 /usr/local/bin/crypt/wrapper.py' >> /etc/crontab
 
